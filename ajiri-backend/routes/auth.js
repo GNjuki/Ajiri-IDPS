@@ -74,7 +74,7 @@ router.post('/register', [
 
 // Login user
 router.post('/login', [
-  body('username').trim().escape(),
+  body('email').trim().escape(),
   body('password').exists()
 ], async (req, res) => {
   try {
@@ -83,12 +83,12 @@ router.post('/login', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     const db = getDb();
     
-    console.log('Login attempt:', { username: username.substring(0, 3) + '***', hasPassword: !!password });
+    console.log('Login attempt:', { email: email.substring(0, 3) + '***', hasPassword: !!password });
 
-    db.get('SELECT * FROM users WHERE (username = ? OR email = ? OR first_name = ?) AND is_active = 1', [username, username, username], async (err, user) => {
+    db.get('SELECT * FROM users WHERE email = ? AND is_active = 1', [email], async (err, user) => {
       console.log('User found:', user ? 'Yes' : 'No');
       if (err) {
         return res.status(500).json({ error: 'Database error' });
