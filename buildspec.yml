@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo Installing dependencies...
+      - npm install -g pm2
+      
+  pre_build:
+    commands:
+      - echo Pre-build phase started on `date`
+      - echo Installing backend dependencies...
+      - cd ajiri-backend && npm install
+      - echo Installing frontend dependencies...
+      - cd ../ajiri-frontend && npm install
+      
+  build:
+    commands:
+      - echo Build phase started on `date`
+      - echo Building frontend...
+      - npm run build
+      - echo Build completed on `date`
+      
+  post_build:
+    commands:
+      - echo Post-build phase completed on `date`
+
+artifacts:
+  files:
+    - '**/*'
+  name: ajiri-build-$(date +%Y-%m-%d)
